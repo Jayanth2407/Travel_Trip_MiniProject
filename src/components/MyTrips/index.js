@@ -1,72 +1,44 @@
-import {Link} from 'react-router-dom'
-
-import Footer from '../Footer'
-import Header from '../Header'
-import TripItem from '../TripItem'
-
 import TripsListContext from '../../context/TripsListContext'
 
 import './index.css'
 
-// MyTrips component displays a user's trips or a message if no trips exist
-const MyTrips = () => (
-  <TripsListContext.Consumer>
-    {value => {
-      // Destructure the tripsList from context value
-      const {tripsList} = value
+const TripItem = props => {
+  const {tripDetails} = props
 
-      return (
-        <>
-          {/* Header with active nav item set to "MY_TRIPS" */}
-          <Header activeNavbarItem="MY_TRIPS" />
+  const {id, endLocation, startDate, endDate} = tripDetails
 
-          {/* Conditional rendering: show no trips message or trips list */}
-          {tripsList.length === 0 ? (
-            <>
-              {/* Container for "No trips" message */}
-              <div className="no-trips-container">
-                {/* Image for no trips */}
-                <img
-                  src="https://res.cloudinary.com/dt7mi4nem/image/upload/v1741297116/Frame_1000003903_1_eqfbo7.png"
-                  className="no-trips-image"
-                  alt="no trips"
-                />
-                {/* Heading for no trips */}
-                <h1 className="no-trips-heading">No upcoming trips.</h1>
-                {/* Description for no trips */}
-                <p className="no-trips-description">
-                  When you book a trip, you will see your trip details here.
+  return (
+    <TripsListContext.Consumer>
+      {value => {
+        const {removeTrip} = value
+
+        const onRemoveTrip = () => {
+          removeTrip(id)
+        }
+
+        return (
+          <>
+            <li className="my-trip-item">
+              <h1 className="my-trip-item-location">{endLocation}</h1>
+              <div>
+                <p className="my-trip-item-date-label">Date</p>
+                <p className="my-trip-item-date">
+                  {startDate} to {endDate}
                 </p>
-                {/* Button to navigate to "Book a new trip" page */}
-                <Link className="link" to="/book-a-new-trip">
-                  <button type="button" className="book-a-new-trip-button">
-                    Book a new trip
-                  </button>
-                </Link>
               </div>
-            </>
-          ) : (
-            <>
-              {/* Container for displaying trips */}
-              <div className="my-trips-container">
-                <h1 className="my-trips-heading">My Trips</h1>
-                {/* List of trips */}
-                <ul className="my-trips-list">
-                  {/* Map over each trip and render TripItem component */}
-                  {tripsList.map(eachTrip => (
-                    <TripItem key={eachTrip.id} tripDetails={eachTrip} />
-                  ))}
-                </ul>
-              </div>
-            </>
-          )}
+              <button
+                type="button"
+                className="my-trip-item-cancel-button"
+                onClick={onRemoveTrip}
+              >
+                Cancel
+              </button>
+            </li>
+          </>
+        )
+      }}
+    </TripsListContext.Consumer>
+  )
+}
 
-          {/* Footer with active nav item set to "MY_TRIPS" */}
-          <Footer activeNavbarItem="MY_TRIPS" />
-        </>
-      )
-    }}
-  </TripsListContext.Consumer>
-)
-
-export default MyTrips
+export default TripItem
